@@ -1,3 +1,10 @@
+/*
+Gavin Davis
+Computer Science
+Temperature Project
+10/22/2026
+*/
+
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -16,84 +23,136 @@ conditions*/
 
 using namespace std;
 
+//Global input file
+ifstream inputfile;
+
 //function prototypes
-bool openInputFile(ifstream& inputfile, string filename);
+
+//opens file
+bool openInputFile(string filename);
+
+// checks temperature range
 bool validTemperature(int temperature);
-int printbar(int temperature);
+
+//displays temperature bar
+int printBar(int temperature);
 
 int main()
 {
-
-	ifstream inputfile;
-	inputfile.open("Tempinput.cpp");
-
-		if (!openInputFile(inputfile, "Tempinput.cpp" ))
-		{
-			cout << "File failed to open";
-			return 1;
-		}
-
 	int temperature;
 
+	// Pre-Condition: the temperatures.txt file must exist and be accesible to the program
+	//test input file
+	if (!openInputFile("Temperatures.txt"))
+	{
+		cout << "File failed to open";
+		return 1;
+	}
+
+	//Post-Condition: The input file is succesfully opened
+
+	//print chart title
+	cout << "Temperature Bar Chart" << endl << endl;
+
+	//titles for graph
 	cout << "Hourly Temperature Bar Chart" << endl;
 	cout << "Each * represents 3 degrees" << endl;
 	cout << endl;
 
+	//print temperature scale, and scale line
+	cout << "       -30        0         30          60      90        120" << endl;
+	cout << "        |---------|----------|----------|--------|--------|" << endl;
+
+
+	//Pre condidtion: the input file must be open
 	//read temps from the file
 	while (inputfile >> temperature)
 	{
-		if(validTemperature(temperature))
+		// check if temperatures are within the valid range
+		if (validTemperature(temperature))
 		{
-			printbar(temperature);
+			// print the temperature bar
+			printBar(temperature);
 		}
 		else
 		{
+			//display an error for invalid temperatures
 			cout << "Invalid temperature: "
-				<< temperature << endl;
+			<< temperature << endl;
+			//Post Condition: Every temperature in the file has been read
+			// close file
 			inputfile.close();
 			return 0;
+		}
 	}
-		
+}
 	//function to open file
-	bool openInputFile(ifstream& inputfile, string filename)
+	bool openInputFile(string filename)
 	{
+		//Pre-Condition: A valid filename must be provided
 		inputfile.open(filename);
+		//Post-Condition: Returns true if the file opened, otherwise returns false
 		return inputfile.is_open();
 	}
 	
 	//Function to validate temperatures
 	bool validTemperature(int temperature)
 	{
-		return temperature >= -30 && temperature <= 120;
-	} 
+		//Pre-Condition: a temperature must be provided
+		// temp must be inbetween -30 and 120
+		if (temperature >= -30 && temperature <= 120)
+		{
+			//Post-Condition: Returns true for a valid temperature
+			return true;
+		}
+		else
+		{
+			//Post-Condition: Return false for invalid temperature
+			return false;
+		}
+	}
 	
 	//Function to print the bar chart
-	int printBar(int temperature)
+int printBar(int temperature)
 	{
-		int starCount = abs(temperature)/ 3;
+	// each star is 3 degrees
+		int starCount = abs(temperature) / 3;
 
 		int zeroPosition = 10;
-
+		// display the temperature number
 		cout << temperature << "\t";
-		
+
+		// if temperature is negative, print stars to the left
 		if (temperature < 0)
 		{
-
+			// print spaces to put negative bar in position
 			for (int i = 0; i < zeroPosition - starCount; i++)
 			{
 				cout << " ";
 			}
-		}
+
+			// print the negative stars
 			for (int i = 0; i < starCount; i++)
 			{
 				cout << "*";
 			}
+			cout << "|";
+		}
 		else
 		{
-			for(int i =0; i < zeroPosition;) i++)
+			//leave space for the negative side
+			for (int i = 0; i < zeroPosition; i++)
 			{
 				cout << " ";
-				}
+			}
+			// print vertical lines
+			cout << "|";
+		}
+
+
+		//if temperature is positive, print stars to the right
+			if (temperature >0)
+			{ 
 				for (int i = 0; i < starCount; i++)
 				{
 					cout << "*";
